@@ -58,8 +58,23 @@
             isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
-            key = "VK_LAYER_PATH"
-            value = "/Users/${USER}VulkanSDK/macOS/share/vulkan/explicit_layer.d"
+            key = "VK_DRIVER_FILES"
+            value = "/Users/${USER}/VulkanSDK/macOS/share/vulkan/icd.d/MoltenVK_icd.json"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "DYLD_LIBRARY_PATH"
+            value = "/Users/${USER}/VulkanSDK/macOS/lib"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "VK_ADD_LAYER_PATH"
+            value = "/Users/${USER}/VulkanSDK/macOS/share/vulkan/explicit_layer.d"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "VULKAN_SDK"
+            value = "/Users/${USER}/VulkanSDK/macOS"
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
