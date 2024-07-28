@@ -10,6 +10,8 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+#include <map>
+#include <optional>
 
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
@@ -23,6 +25,13 @@ const bool enableValidationLayers = false;
 #else
 const bool enableValidationLayers = true;
 #endif
+
+struct QueueFamilyIndices {
+    std::optional<uint32_t> graphicsFamily;
+    bool isComplete() {
+        return graphicsFamily.has_value();
+    }
+};
 
 VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {
     auto func = (PFN_vkCreateDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
@@ -76,10 +85,9 @@ private:
         if (!glfwVulkanSupported()) {
             throw std::runtime_error("GLFW: Vulkan Not Supported\n");
         }
-        
         createInstance();
-        
         setupDebugMessenger();
+        pickPhysipcalDevice();
     }
 
     void mainLoop() {
@@ -173,6 +181,96 @@ private:
         {
             throw std::runtime_error(std::string("Failed to set up debug messenger! VkResult: ") + string_VkResult(result));
         }
+    }
+    
+    void pickPhysipcalDevice()
+    {
+        uint32_t deviceCount = 0;
+        vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
+        if(deviceCount == 0) {
+            throw std::runtime_error("Failed to find GPUs with Vulkan support!");
+        }
+        std::vector<VkPhysicalDevice> devices(deviceCount);
+        vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
+        
+        // Use an ordered map to automatically sort candidates by increasing score
+        std::multimap<int, VkPhysicalDevice> candidates;
+        
+        for(const auto& device : devices) {
+            int score = rateDeviceSuitability(device);
+            candidates.insert(std::make_pair(score, device));
+        }
+        
+        // Check if the best candidate is suitable
+        if(candidates.rbegin()->first > 0) {
+            physicalDevice = candidates.rbegin()->second;
+        } else {
+            throw std::runtime_error("Failed to find a suitable GPU!");
+        }
+    }
+    
+    int rateDeviceSuitability(VkPhysicalDevice device) {
+    
+        // Get basic device properties like the name, type and supported Vulkan version
+        VkPhysicalDeviceProperties deviceProperties;
+        vkGetPhysicalDeviceProperties(device, &deviceProperties);
+        
+        // Get Support for optional features like texture compresion, 64 bit floats and multi viewport rendering(useful for VR)
+        VkPhysicalDeviceFeatures deviceFeatures;
+        vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
+        
+        // Mandatory Features and Properties //
+        //if (!deviceFeatures.geometryShader) { // Note: Vulkan on Mac (MoltenVK) does not support Geometry Shader, it will return false even if this device supports geometry shaders
+        //    return 0;
+        //}
+        QueueFamilyIndices indices = findQueueFamilies(device);
+        if(!indices.isComplete())
+        {
+            return 0;
+        }
+        
+        // Optional Features and Properties //
+        int score = 0;
+        
+        // Discrete GPUs have a significant performance advantage
+        if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) {
+            score += 1000;
+        }
+        else if(deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
+        {
+            score += 500;
+        }
+        
+        // Maximum possible size of textures affects graphics quality
+        score += deviceProperties.limits.maxImageDimension2D;
+        
+        return score;
+    }
+    
+    QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
+        // Logic to find queue family to populate struct with
+        QueueFamilyIndices indices;
+        
+        uint32_t queueFamilyCount = 0;
+        vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
+        
+        std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+        vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
+        
+        int i = 0;
+        for(const auto& queueFamily : queueFamilies) {
+            if(queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+                indices.graphicsFamily = i;
+            }
+            
+            if(indices.isComplete()) {
+                break;
+            }
+            
+            i++;
+        }
+        
+        return indices;
     }
     
     std::vector<const char*> getRequiredExtensions() {
@@ -286,6 +384,7 @@ private:
     GLFWwindow* window;
     VkInstance instance;
     VkDebugUtilsMessengerEXT debugMessenger;
+    VkPhysicalDevice physicalDevice = VK_NULL_HANDLE; // implicitly destroyed when the VkInstance is destroyed
 };
 
 int main() {
