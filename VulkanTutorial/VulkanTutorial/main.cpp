@@ -58,7 +58,7 @@ public:
         mainLoop();
         cleanup();
     }
-
+    
 private:
     void initWindow() {
         
@@ -88,8 +88,9 @@ private:
         createInstance();
         setupDebugMessenger();
         pickPhysipcalDevice();
+        createLogicalDevice();
     }
-
+    
     void mainLoop() {
         
         // Keep the application running until either an error occurs or the window is closed
@@ -97,8 +98,9 @@ private:
             glfwPollEvents();
         }
     }
-
+    
     void cleanup() {
+        vkDestroyDevice(device, nullptr);
         
         if(enableValidationLayers) {
             DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
@@ -107,7 +109,7 @@ private:
         vkDestroyInstance(instance, nullptr);
         
         glfwDestroyWindow(window);
-
+        
         glfwTerminate();
     }
     
@@ -126,15 +128,17 @@ private:
         appInfo.pEngineName = "No Engine";
         appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
         appInfo.apiVersion = VK_API_VERSION_1_0;
-
+        
         // Tells Vulkan driver which global extentions and validation layers we want to use (mandatory)
         VkInstanceCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
         createInfo.pApplicationInfo = &appInfo;
- 
+        
         // Encountered VK_ERROR_INCOMPATIBLE_DRIVER from vkCreateInstance for MacOS with the latest MoltenVK sdk
         // Beginning with the 1.3.216 Vulkan SDK, the VK_KHR_PORTABILITY_subset extension is mandatory.
+        #if defined __APPLE__ && defined __arm64__
         createInfo.flags |= VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
+        #endif
         
         std::vector<const char*> requiredExtensions = getRequiredExtensions();
         createInfo.enabledExtensionCount = (uint32_t) requiredExtensions.size();
@@ -144,7 +148,7 @@ private:
         if (enableValidationLayers) {
             createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
             createInfo.ppEnabledLayerNames = validationLayers.data();
-
+            
             populateDebugMessengerCreateInfo(debugCreateInfo);
             createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*) &debugCreateInfo;
         } else {
@@ -209,8 +213,53 @@ private:
         }
     }
     
-    int rateDeviceSuitability(VkPhysicalDevice device) {
+    void createLogicalDevice() {
+        QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
+        
+        VkDeviceQueueCreateInfo queueCreateInfo{};
+        queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
+        queueCreateInfo.queueCount = 1;
+        
+        // Priorities to queues to influence the scheduling of command buffer execution using floating point numbers between 0.0 and 1.0. Requered
+        float queuePriority = 1.0f;
+        queueCreateInfo.pQueuePriorities = &queuePriority;
+        
+        VkPhysicalDeviceFeatures deviceFeatures{};
+        
+        VkDeviceCreateInfo createInfo{};
+        createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+        
+        createInfo.pQueueCreateInfos = &queueCreateInfo;
+        createInfo.queueCreateInfoCount = 1;
+        
+        createInfo.pEnabledFeatures = &deviceFeatures;
+        
+        std::vector<const char *> requiredExtensions = getRequiredDeviceExtensions();
+        createInfo.ppEnabledExtensionNames = requiredExtensions.data();
+        createInfo.enabledExtensionCount = static_cast<uint32_t>(requiredExtensions.size());;
+        
+        // Previous implementations of Vulkan made a distinction between instance and device specific validation layers but this is not longer the case
+        // Tthe following condition will be ignored in up-to-date implementations however it has been added to make compatible with older implementations
+        if (enableValidationLayers) {
+            createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+            createInfo.ppEnabledLayerNames = validationLayers.data();
+        } else {
+            createInfo.enabledLayerCount = 0;
+        }
+        
+        // Instantiate the logical device
+        VkResult result = vkCreateDevice(physicalDevice, &createInfo, nullptr, &device);
+        if(result != VK_SUCCESS)
+        {
+            throw std::runtime_error(std::string("Failed to create logical device! VkResult: ") + string_VkResult(result));
+        }
+        
+        vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
+    }
     
+    int rateDeviceSuitability(VkPhysicalDevice device) {
+        
         // Get basic device properties like the name, type and supported Vulkan version
         VkPhysicalDeviceProperties deviceProperties;
         vkGetPhysicalDeviceProperties(device, &deviceProperties);
@@ -276,13 +325,16 @@ private:
     std::vector<const char*> getRequiredExtensions() {
         uint32_t glfwExtensionCount = 0;
         const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
+        
         // Encountered VK_ERROR_INCOMPATIBLE_DRIVER from vkCreateInstance for MacOS with the latest MoltenVK sdk
         // Beginning with the 1.3.216 Vulkan SDK, the VK_KHR_PORTABILITY_subset extension is mandatory.
         std::vector<const char*> requiredExtensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
+        
+        #if defined __APPLE__ && defined __arm64__
         requiredExtensions.emplace_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
         requiredExtensions.emplace_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
-
+        #endif
+        
         if(enableValidationLayers) {
             requiredExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
         }
@@ -292,8 +344,25 @@ private:
         {
             throw std::runtime_error("Failed to create instance, some of the required extensions were not supported.");
         }
-
+        
         return requiredExtensions;
+    }
+    
+    std::vector<const char*> getRequiredDeviceExtensions() {
+        uint32_t deviceExtensionPropertyCount = 0;
+        vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &deviceExtensionPropertyCount, nullptr);
+        
+        std::vector<VkExtensionProperties> deviceExtensionProperties(deviceExtensionPropertyCount);
+        vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &deviceExtensionPropertyCount, deviceExtensionProperties.data());
+        
+        for (const auto& property : deviceExtensionProperties)
+        {
+            if (strcmp(property.extensionName, "VK_KHR_portability_subset") == 0)
+            {
+                return { "VK_KHR_portability_subset" };
+            }
+        }
+        return {};
     }
     
     // Check if all the requested layers are available
@@ -350,32 +419,32 @@ private:
         // Proceed to check
         std::cout << "Required extensions:" << glfwRequiredExtensions.size()  << "\n";
         bool allSupported = std::all_of(
-                                  glfwRequiredExtensions.begin(),
-                                  glfwRequiredExtensions.end(),
-                                  [&supportedExtensions](const char* requiredExtension) {
-                                     bool supported = std::any_of(
-                                                         supportedExtensions.begin(),
-                                                         supportedExtensions.end(),
-                                                         [requiredExtension](const VkExtensionProperties& ext) {
-                                                             return strcmp(ext.extensionName, requiredExtension) == 0;
-                                                         });
-                                      if(!supported) {
-                                          std::cerr << '\t' << "Required extension '" << requiredExtension << "' is not supported." << '\n';
-                                      } else {
-                                          std::cout << '\t' << "Required extension '" << requiredExtension << "' is supported." << '\n';
-                                      }
-                                      
-                                      return supported;
-                                  });
+                                        glfwRequiredExtensions.begin(),
+                                        glfwRequiredExtensions.end(),
+                                        [&supportedExtensions](const char* requiredExtension) {
+                                            bool supported = std::any_of(
+                                                                         supportedExtensions.begin(),
+                                                                         supportedExtensions.end(),
+                                                                         [requiredExtension](const VkExtensionProperties& ext) {
+                                                                             return strcmp(ext.extensionName, requiredExtension) == 0;
+                                                                         });
+                                            if(!supported) {
+                                                std::cerr << '\t' << "Required extension '" << requiredExtension << "' is not supported." << '\n';
+                                            } else {
+                                                std::cout << '\t' << "Required extension '" << requiredExtension << "' is supported." << '\n';
+                                            }
+                                            
+                                            return supported;
+                                        });
         
         return allSupported;
     }
     
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback( VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType,
-        const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
-
+                                                        const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
+        
         std::cerr << "Validation layer: " << pCallbackData->pMessage << std::endl;
-
+        
         return VK_FALSE;
     }
     
@@ -385,6 +454,8 @@ private:
     VkInstance instance;
     VkDebugUtilsMessengerEXT debugMessenger;
     VkPhysicalDevice physicalDevice = VK_NULL_HANDLE; // implicitly destroyed when the VkInstance is destroyed
+    VkDevice device; // logical device
+    VkQueue graphicsQueue;
 };
 
 int main() {
