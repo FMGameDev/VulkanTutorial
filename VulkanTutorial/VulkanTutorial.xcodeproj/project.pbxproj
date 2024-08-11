@@ -18,6 +18,7 @@
 		1D5238DB2C543390002BA156 /* libMoltenVK.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1D5238D92C543387002BA156 /* libMoltenVK.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		1D686FFD2C558D4300E52609 /* libVkLayer_khronos_validation.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D686FFC2C558D4300E52609 /* libVkLayer_khronos_validation.dylib */; };
 		1D686FFE2C558D4F00E52609 /* libVkLayer_khronos_validation.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1D686FFC2C558D4300E52609 /* libVkLayer_khronos_validation.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		1DCA55E92C694A4F00EF8D42 /* ObjC-interface.m in Sources */ = {isa = PBXBuildFile; fileRef = 1DCA55E82C694A4F00EF8D42 /* ObjC-interface.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -45,6 +46,8 @@
 		1D5238D42C543375002BA156 /* libvulkan.1.3.290.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvulkan.1.3.290.dylib; path = ../../../../VulkanSDK/macOS/lib/libvulkan.1.3.290.dylib; sourceTree = "<group>"; };
 		1D5238D92C543387002BA156 /* libMoltenVK.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libMoltenVK.dylib; path = ../../../../VulkanSDK/macOS/lib/libMoltenVK.dylib; sourceTree = "<group>"; };
 		1D686FFC2C558D4300E52609 /* libVkLayer_khronos_validation.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.bundle"; name = libVkLayer_khronos_validation.dylib; path = ../../../../VulkanSDK/macOS/lib/libVkLayer_khronos_validation.dylib; sourceTree = "<group>"; };
+		1DCA55E82C694A4F00EF8D42 /* ObjC-interface.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "ObjC-interface.m"; sourceTree = "<group>"; };
+		1DCA55EA2C694A8400EF8D42 /* ObjC-interface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ObjC-interface.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +87,8 @@
 			isa = PBXGroup;
 			children = (
 				1D2965822C51917E0009B927 /* main.cpp */,
+				1DCA55E82C694A4F00EF8D42 /* ObjC-interface.m */,
+				1DCA55EA2C694A8400EF8D42 /* ObjC-interface.h */,
 			);
 			path = VulkanTutorial;
 			sourceTree = "<group>";
@@ -157,6 +162,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1DCA55E92C694A4F00EF8D42 /* ObjC-interface.m in Sources */,
 				1D2965832C51917E0009B927 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
