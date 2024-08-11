@@ -13,7 +13,7 @@ It has been generate from my Vulkan_Template project: https://github.com/FMGameD
     - Physical devices and queue families (Done)
     - Logical deices and queues (Done)
   - Presentation
-    - Window surface
+    - Window surface (Done)
     - Swap chain
     - Image views
   - Graphics pipeline
