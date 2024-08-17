@@ -6,16 +6,16 @@ It has been generate from my Vulkan_Template project: https://github.com/FMGameD
 
 ## Vulkan Tutorial Indice (Track)
 - Drawing a triangle
-  - Setup (Done)
-    - Base Code (Done)
-    - Instance (Done)
-    - Validation layers (Done)
-    - Physical devices and queue families (Done)
-    - Logical deices and queues (Done)
-  - Presentation
-    - Window surface (Done)
-    - Swap chain
-    - Image views
+  - Setup (DONE)
+    - Base Code (DONE)
+    - Instance (DONE)
+    - Validation layers (DONE)
+    - Physical devices and queue families (DONE)
+    - Logical deices and queues (DONE)
+  - Presentation (DONE)
+    - Window surface (DONE)
+    - Swap chain (DONE)
+    - Image views (DONE)
   - Graphics pipeline
     - Introduction
     - Shader modules
