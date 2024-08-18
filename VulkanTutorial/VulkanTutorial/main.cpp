@@ -122,6 +122,7 @@ private:
         createLogicalDevice();
         createSwapChain();
         createImageViews();
+        createGraphicsPipeline();
     }
     
     void mainLoop() {
@@ -749,6 +750,10 @@ private:
             }
             
         }
+    }
+    
+    void createGraphicsPipeline() {
+        
     }
     
 private:
