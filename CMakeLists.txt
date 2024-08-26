@@ -1,3 +1,9 @@
+# Main CMakeLists.txt
+
+# Add the shaders subdirectory
+add_subdirectory(assets/shaders)
+
+
 cmake_minimum_required(VERSION 3.28)
 project(VulkanTutorial VERSION 1.0.0)
 
@@ -39,6 +45,8 @@ set(SRC_FILES
     src/core/renderer/VulkanSurface.cpp
     src/core/renderer/VulkanSwapChain.cpp
     src/core/renderer/VulkanValidationLayer.cpp
+
+    src/graphics/Shader.cpp
     
     src/utilities/logging/Logger.cpp
 )
@@ -72,7 +80,3 @@ target_link_libraries(${TARGET_NAME}
     ${QUARTZCORE_FRAMEWORK}
 )
 
-# Optionally add a custom output directory for binaries
-set_target_properties(${TARGET_NAME} PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
-)

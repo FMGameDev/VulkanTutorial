@@ -2,13 +2,15 @@
 
 #include <vulkan/vulkan.h>
 
+class Shader;
+
 class VulkanGraphicsPipeline
 {
 public:
     VulkanGraphicsPipeline();
     ~VulkanGraphicsPipeline();
 
-    void createPipeline();
+    void createPipeline(VkDevice device);
     void cleanUp();
 
     VkPipeline getPipeline() const { return m_pipeline; };
@@ -19,7 +21,8 @@ private:
     VkPipelineLayout m_pipelineLayout;
     VkDevice m_device;
     VkRenderPass m_renderPass;
+    Shader *m_simpleShader;
 
     void createPipelineLayout();
-    void createGraphicsPipeline();
+    void createGraphicsPipeline(VkDevice device);
 };

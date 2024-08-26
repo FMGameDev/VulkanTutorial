@@ -27,12 +27,16 @@ void VulkanRenderer::initVulkan()
     m_vulkanSwapChain.createSwapChain(m_vulkanDevice.getDevice(), m_vulkanDevice.getPhysicalDevice(), m_vulkanSurface.getSurface(), widthPx, heightPx);
 
     m_vulkanSwapChain.createImageViews();
+
+    m_vulkanGraphicsPipeline.createPipeline(m_vulkanDevice.getDevice());
 }
 
 void VulkanRenderer::cleanup()
 {
     // Vulkan components clean up
     m_vulkanSwapChain.cleanUp();
+
+    m_vulkanGraphicsPipeline.cleanUp();
 
     m_vulkanDevice.cleanUp();
 

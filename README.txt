@@ -18,8 +18,8 @@ The latest commits are developed using Visual Studio Code.
     - Swap chain (DONE)
     - Image views (DONE)
   - Graphics pipeline
-    - Introduction
-    - Shader modules
+    - Introduction (DONE)
+    - Shader modules (DONE)
     - Fixed functions
     - Render passes
     - Conclusions
