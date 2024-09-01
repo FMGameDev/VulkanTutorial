@@ -8,6 +8,9 @@
 #include "VulkanSurface.hpp"
 #include "VulkanValidationLayer.hpp"
 #include "VulkanRenderPass.hpp"
+#include "VulkanFramebuffer.hpp";
+
+#include <vector>
 
 class WindowHandler;
 
@@ -31,6 +34,7 @@ private:
     VulkanSwapChain m_vulkanSwapChain;
     VulkanValidationLayer m_vulkanValidationLayer;
     VulkanRenderPass m_vulkanRenderPass;
+    std::vector<VulkanFramebuffer> m_vulkanSwapChainFramebuffers;
 
 #ifdef NDEBUG
     const bool enableValidationLayers = false;

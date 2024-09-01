@@ -39,6 +39,7 @@ set(SRC_FILES
 
     src/core/renderer/VulkanDebugMessenger.cpp
     src/core/renderer/VulkanDevice.cpp
+    src/core/renderer/VulkanFramebuffer.cpp
     src/core/renderer/VulkanGraphicsPipeline.cpp
     src/core/renderer/VulkanInstance.cpp
     src/core/renderer/VulkanRenderer.cpp

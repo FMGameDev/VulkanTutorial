@@ -5,9 +5,9 @@ void VulkanPipelineConfigFactory::basicPipelineConfig(VulkanGraphicsPipelineConf
     // Vertex Input
     configInfo.m_vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
     configInfo.m_vertexInputInfo.vertexBindingDescriptionCount = 0;
-    configInfo.m_vertexInputInfo.pVertexBindingDescriptions = nullptr;
+    configInfo.m_vertexInputInfo.pVertexBindingDescriptions = nullptr; // Optional
     configInfo.m_vertexInputInfo.vertexAttributeDescriptionCount = 0;
-    configInfo.m_vertexInputInfo.pVertexAttributeDescriptions = nullptr;
+    configInfo.m_vertexInputInfo.pVertexAttributeDescriptions = nullptr; // Optional
 
     // Input Assembly
     configInfo.m_inputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -49,6 +49,10 @@ void VulkanPipelineConfigFactory::basicPipelineConfig(VulkanGraphicsPipelineConf
     configInfo.m_multisampleInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
     configInfo.m_multisampleInfo.sampleShadingEnable = VK_FALSE;
     configInfo.m_multisampleInfo.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+    // configInfo.m_multisampleInfo.minSampleShading = 1.0f;          // Optional
+    // configInfo.m_multisampleInfo.pSampleMask = nullptr;            // Optional
+    // configInfo.m_multisampleInfo.alphaToCoverageEnable = VK_FALSE; // Optional
+    // configInfo.m_multisampleInfo.alphaToOneEnable = VK_FALSE;      // Optional
 
     // Depth Stencil
     configInfo.m_depthStencilInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
@@ -63,6 +67,12 @@ void VulkanPipelineConfigFactory::basicPipelineConfig(VulkanGraphicsPipelineConf
         VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
         VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     configInfo.m_colorBlendAttachment.blendEnable = VK_FALSE;
+    // configInfo.m_colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;  // Optional
+    // configInfo.m_colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO; // Optional
+    // configInfo.m_colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;             // Optional
+    // configInfo.m_colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;  // Optional
+    // configInfo.m_colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO; // Optional
+    // configInfo.m_colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;             // Optional
 
     configInfo.m_colorBlendInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
     configInfo.m_colorBlendInfo.logicOpEnable = VK_FALSE;

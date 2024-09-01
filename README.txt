@@ -65,6 +65,7 @@ VulkanProject/
 │   │   ├── renderer/             # Vulkan-specific or low-level rendering pipeline
 │   │   │   ├── VulkanDebugMessenger.hpp
 │   │   │   ├── VulkanDevice.hpp
+│   │   │   ├── VulkanFramebuffer.hpp
 │   │   │   ├── VulkanGraphicsPipeline.hpp
 │   │   │   ├── VulkanInstance.hpp
 │   │   │   ├── VulkanRenderer.hpp
@@ -102,6 +103,7 @@ VulkanProject/
 │   │   ├── renderer/             # Vulkan-specific components
 │   │   │   ├── VulkanDebugMessenger.cpp
 │   │   │   ├── VulkanDevice.cpp
+│   │   │   ├── VulkanFramebuffer.cpp
 │   │   │   ├── VulkanGraphicsPipeline.cpp
 │   │   │   ├── VulkanInstance.cpp
 │   │   │   ├── VulkanRenderer.cpp
