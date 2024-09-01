@@ -28,17 +28,7 @@ VulkanDebugMessenger::VulkanDebugMessenger() {}
 
 VulkanDebugMessenger::~VulkanDebugMessenger() {}
 
-void VulkanDebugMessenger::setup(const VkInstance &instance)
-{
-    createDebugMessenger(instance);
-}
-
-void VulkanDebugMessenger::cleanUp(const VkInstance &instance)
-{
-    destroyDebugUtilsMessengerEXT(instance, m_debugMessenger, nullptr);
-}
-
-void VulkanDebugMessenger::createDebugMessenger(const VkInstance &instance)
+void VulkanDebugMessenger::setUp(const VkInstance &instance)
 {
     VkDebugUtilsMessengerCreateInfoEXT createInfo = {};
     populateDebugMessengerCreateInfo(createInfo);
@@ -48,6 +38,11 @@ void VulkanDebugMessenger::createDebugMessenger(const VkInstance &instance)
     {
         throw std::runtime_error(std::string("Failed to set up debug messenger! VkResult: ") + string_VkResult(result));
     }
+}
+
+void VulkanDebugMessenger::cleanUp(const VkInstance &instance)
+{
+    destroyDebugUtilsMessengerEXT(instance, m_debugMessenger, nullptr);
 }
 
 VkResult VulkanDebugMessenger::createDebugUtilsMessengerEXT(const VkInstance &instance, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkDebugUtilsMessengerEXT *pDebugMessenger)

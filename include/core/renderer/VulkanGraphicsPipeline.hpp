@@ -1,6 +1,10 @@
 #pragma once
 
 #include <vulkan/vulkan.h>
+#include <vector>
+#include <memory>
+
+class VulkanGraphicsPipelineConfig;
 
 class Shader;
 
@@ -10,19 +14,20 @@ public:
     VulkanGraphicsPipeline();
     ~VulkanGraphicsPipeline();
 
-    void createPipeline(VkDevice device);
+    void createPipeline(const VkDevice &device, const VulkanGraphicsPipelineConfig &configInfo, const Shader &shader, const VkRenderPass &renderPass, const uint32_t subpass = 0);
     void cleanUp();
 
-    VkPipeline getPipeline() const { return m_pipeline; };
+    VkPipeline getPipeline() const { return m_graphicsPipeline; };
     VkPipelineLayout getPipelineLayout() const { return m_pipelineLayout; };
 
 private:
-    VkPipeline m_pipeline;
-    VkPipelineLayout m_pipelineLayout;
     VkDevice m_device;
-    VkRenderPass m_renderPass;
-    Shader *m_simpleShader;
+    VkPipeline m_graphicsPipeline;
+    VkPipelineLayout m_pipelineLayout;
+
+    std::vector<VkPipelineShaderStageCreateInfo> m_shaderStages;
 
     void createPipelineLayout();
-    void createGraphicsPipeline(VkDevice device);
+    void createGraphicsPipeline(const VulkanGraphicsPipelineConfig &configInfo, const VkRenderPass &renderPass, const uint32_t subpass);
+    void setShaderStages(const Shader &shader);
 };

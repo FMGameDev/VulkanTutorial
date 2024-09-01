@@ -16,13 +16,11 @@ public:
     VulkanDebugMessenger();
     ~VulkanDebugMessenger();
 
-    void setup(const VkInstance &instance);
+    void setUp(const VkInstance &instance);
     void cleanUp(const VkInstance &instance);
 
 private:
     VkDebugUtilsMessengerEXT m_debugMessenger;
-
-    void createDebugMessenger(const VkInstance &instance);
 
     VkResult createDebugUtilsMessengerEXT(const VkInstance &instance, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkDebugUtilsMessengerEXT *pVulkanDebugMessenger);
     void destroyDebugUtilsMessengerEXT(const VkInstance &instance, VkDebugUtilsMessengerEXT VulkanDebugMessenger, const VkAllocationCallbacks *pAllocator);

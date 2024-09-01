@@ -42,6 +42,7 @@ set(SRC_FILES
     src/core/renderer/VulkanGraphicsPipeline.cpp
     src/core/renderer/VulkanInstance.cpp
     src/core/renderer/VulkanRenderer.cpp
+    src/core/renderer/VulkanRenderPass.cpp
     src/core/renderer/VulkanSurface.cpp
     src/core/renderer/VulkanSwapChain.cpp
     src/core/renderer/VulkanValidationLayer.cpp
@@ -49,6 +50,7 @@ set(SRC_FILES
     src/graphics/Shader.cpp
     
     src/utilities/logging/Logger.cpp
+    src/utilities/renderer/VulkanPipelineConfigFactory.cpp
 )
 
 add_executable(${TARGET_NAME}

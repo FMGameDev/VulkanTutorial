@@ -31,6 +31,8 @@ public:
     void cleanUp();
 
     VkSwapchainKHR getSwapChain() const { return m_swapChain; }
+    VkExtent2D getSwapChainExtent() const { return m_swapChainExtent; }
+    VkFormat getSwapChainFormat() const { return m_swapChainImageFormat; }
     std::vector<VkImageView> getSwapChainImageViews() const { return m_swapChainImageViews; }
 
 private:

@@ -7,6 +7,7 @@
 #include "VulkanDebugMessenger.hpp"
 #include "VulkanSurface.hpp"
 #include "VulkanValidationLayer.hpp"
+#include "VulkanRenderPass.hpp"
 
 class WindowHandler;
 
@@ -29,6 +30,7 @@ private:
     VulkanSurface m_vulkanSurface;
     VulkanSwapChain m_vulkanSwapChain;
     VulkanValidationLayer m_vulkanValidationLayer;
+    VulkanRenderPass m_vulkanRenderPass;
 
 #ifdef NDEBUG
     const bool enableValidationLayers = false;

@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <vector>
 #include <iostream>
+#include <vulkan/vk_enum_string_helper.h>
 
 // Constructor: Load and create shader modules
 Shader::Shader(VkDevice device, const std::string &vertFilePath, const std::string &fragFilePath)
@@ -54,9 +55,10 @@ VkShaderModule Shader::createShaderModule(const std::vector<char> &code)
     createInfo.pCode = reinterpret_cast<const uint32_t *>(code.data());
 
     VkShaderModule shaderModule;
-    if (vkCreateShaderModule(m_device, &createInfo, nullptr, &shaderModule) != VK_SUCCESS)
+    VkResult result = vkCreateShaderModule(m_device, &createInfo, nullptr, &shaderModule);
+    if (result != VK_SUCCESS)
     {
-        throw std::runtime_error("Failed to create shader module!");
+        throw std::runtime_error(std::string("Failed to create shader module! VkResult: ") + string_VkResult(result));
     }
 
     return shaderModule;

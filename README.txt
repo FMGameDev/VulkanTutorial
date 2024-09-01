@@ -20,9 +20,9 @@ The latest commits are developed using Visual Studio Code.
   - Graphics pipeline
     - Introduction (DONE)
     - Shader modules (DONE)
-    - Fixed functions
-    - Render passes
-    - Conclusions
+    - Fixed functions (DONE)
+    - Render passes (DONE)
+    - Conclusions (DONE)
   - Drawing
     -  Framebuffers
     -  Command buffers
@@ -51,7 +51,7 @@ VulkanProject/
 │   │   └── compute/
 │   └── textures/         # Texture files (e.g., .png, .jpg)
 │
-├── build/                # Build output directory (ignored in version control)
+├── build/                # Build output directory (ignored in version control). Where the shaders will be compiled
 │
 ├── docs/                 # Documentation
 │
@@ -63,12 +63,15 @@ VulkanProject/
 │   ├── core/             # Core engine components
 │   │   ├── events/          # Event handling
 │   │   ├── renderer/             # Vulkan-specific or low-level rendering pipeline
-│   │   │   ├── VulkanRenderer.hpp
-│   │   │   ├── Pipeline.hpp
-│   │   │   ├── VulkanInstance.hpp
+│   │   │   ├── VulkanDebugMessenger.hpp
 │   │   │   ├── VulkanDevice.hpp
+│   │   │   ├── VulkanGraphicsPipeline.hpp
+│   │   │   ├── VulkanInstance.hpp
+│   │   │   ├── VulkanRenderer.hpp
+│   │   │   ├── VulkanRenderPass.hpp
+│   │   │   ├── VulkanSurface.hpp
 │   │   │   ├── VulkanSwapChain.hpp
-│   │   │   └── VulkanGraphicsPipeline.hpp
+│   │   │   └── VulkanValidationLayer.hpp
 │   │   ├── system/          # System-level components (e.g., timers, managers)
 │   │   │    └── window/
 │   │   │        ├── MacOsWindowUtils.hpp
@@ -76,15 +79,18 @@ VulkanProject/
 │   │   └──  Engine.hpp          # Central engine management
 │   │
 │   ├── graphics/             # Higher-levelgraphics abstractions or data structures (e.g., Mesh, Texture)
+│   │   └── Shader.hpp
 │   │
 │   ├── input/                 # Input Handling
 │   │
 │   ├── scene/                 # Scene Management
 │   │
 │   └── utilities/                  # Utility implementations
+│       ├── logging/                 # Logging utilities
+│       │   └── Logger.hpp
 │       ├── math/                       # Mathematical utilities
-│       └── logging/                 # Logging utilities
-│           └── Logger.hpp
+│       └── renderer/                 # Renderer utilities
+│           └── VulkanPipelineConfigFactory.hpp
 │
 ├── src/                  # Source files
 │   │
@@ -94,12 +100,15 @@ VulkanProject/
 │   ├── core/             # Core engine components
 │   │   ├── events/          # Event handling
 │   │   ├── renderer/             # Vulkan-specific components
-│   │   │   ├── VulkanRenderer.cpp
-│   │   │   ├── Pipeline.cpp
-│   │   │   ├── VulkanInstance.cpp
+│   │   │   ├── VulkanDebugMessenger.cpp
 │   │   │   ├── VulkanDevice.cpp
+│   │   │   ├── VulkanGraphicsPipeline.cpp
+│   │   │   ├── VulkanInstance.cpp
+│   │   │   ├── VulkanRenderer.cpp
+│   │   │   ├── VulkanRenderPass.cpp
+│   │   │   ├── VulkanSurface.cpp
 │   │   │   ├── VulkanSwapChain.cpp
-│   │   │   └── VulkanGraphicsPipeline.cpp
+│   │   │   └── VulkanValidationLayer.cpp
 │   │   ├── system/          # System-level components (e.g., timers, managers)
 │   │   │   └── window/
 │   │   │       ├── MacOsWindowUtils.cpp
@@ -107,15 +116,18 @@ VulkanProject/
 │   │   └──  Engine.cpp          # Central engine management
 │   │
 │   ├── graphics/             # Higher-levelgraphics abstractions or data structures (e.g., Mesh, Texture)
+│   │   └── Shader.cpp
 │   │
 │   ├── input/                 # Input Handling
 │   │
 │   ├── scene/                 # Scene Management
 │   │
 │   ├── utilities/                  # Utility implementations
+│   │   ├── logging/                 # Logging utilities
+│   │   │   └── Logger.cpp
 │   │   ├── math/                       # Mathematical utilities
-│   │   └── logging/                 # Logging utilities
-│   │       └── Logger.cpp
+│   │   └── renderer/                 # Renderer utilities
+│   │       └── VulkanPipelineConfigFactory.cpp
 │   │
 │   └──  main.cpp            # Entry point of the application
 │
